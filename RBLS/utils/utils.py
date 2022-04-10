@@ -41,7 +41,7 @@ class ReutersUtils():
         self.embedding_dim = 128
         self.hidden_dim = 128
         self.device = 'cpu'
-        self.epochs = 20
+        self.epochs = 10
         self.seq_len = 200
         self.windowNum = 200
         self.n_layers = 2
@@ -58,7 +58,7 @@ class CorpusUtils():
         self.embedding_dim = 128
         self.hidden_dim = 128
         self.device = 'cpu'
-        self.epochs = 0
+        self.epochs = 10
         self.seq_len = 16
         self.windowNum = 16
         self.n_layers = 2

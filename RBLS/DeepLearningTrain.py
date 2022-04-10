@@ -15,7 +15,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class TwitterTrain():
     def __init__(self):
-        args = utils.parse_args()
+        args = utils.TwitterUtils()
         self.batch_size = args.batch_size
         embedding_dim = args.embedding_dim
         hidden_dim = args.hidden_dim
@@ -200,7 +200,7 @@ class TwitterTrain():
 
 class ImdbTrain():
     def __init__(self):
-        args = utils.parse_args()
+        args = utils.ImdbUtils()
         vocab_size = args.vocab_size  # imdb’s vocab_size 即词汇表大小
         seq_len = args.seq_len  # max length
         self.batch_size = args.batch_size
@@ -208,7 +208,7 @@ class ImdbTrain():
         hidden_dim = args.hidden_dim  # lstm hidden size
         DROPOUT = 0.2
         self.epochs = args.epochs
-        self.data = ImdbData(batchsize=self.batch_size, seq_len=args.seq_len, out_dim=args.out_dim)
+        self.data = ImdbData(batchsize=self.batch_size, seq_len=args.seq_len)
         self.model_name = "model/Imdb/Train" + str(args.epochs) + "_Embed" + str(args.embedding_dim) + "_Hidden" + str(
             args.hidden_dim) + "_Seq" + str(args.seq_len) + ".pth"  # 定义模型保存路径
         self.model = ImdbNet(vocab_size, embedding_dim, hidden_dim, DROPOUT).to(device)
@@ -261,7 +261,7 @@ class ImdbTrain():
 
 class ReutersTrain():
     def __init__(self):
-        args = utils.parse_args()
+        args = utils.ReutersUtils()
         vocab_size = args.vocab_size  # imdb’s vocab_size 即词汇表大小
         seq_len = args.seq_len  # max length
         self.batch_size = args.batch_size
@@ -321,7 +321,7 @@ class ReutersTrain():
         print("test time:", time.time() - start)
 
 
-class DataLoader(object):
+class CorpusDataLoader(object):
     def __init__(self, src_sents, label, max_len, cuda=True,
                  batch_size=64, shuffle=True, evaluation=False):
         self.sents_size = len(src_sents)
@@ -370,7 +370,7 @@ class DataLoader(object):
 
 class CorpusTrain():
     def __init__(self):
-        args = utils.parse_args()
+        args = utils.CorpusUtils()
         self.epochs = args.epochs
         self.batch_size = args.batch_size
         seed = 1111
@@ -404,7 +404,7 @@ class CorpusTrain():
         start = time.time()
         optimizer = torch.optim.Adam(self.lstm_attn.parameters(), lr=0.001, weight_decay=0.001)
         criterion = torch.nn.CrossEntropyLoss()
-        training_data = DataLoader(self.data['train']['src'], self.data['train']['label'],
+        training_data = CorpusDataLoader(self.data['train']['src'], self.data['train']['label'],
                                    self.data["max_len"], batch_size=self.batch_size)
         self.lstm_attn.train()
 
@@ -432,7 +432,7 @@ class CorpusTrain():
         self.lstm_attn.eval()
         criterion = torch.nn.CrossEntropyLoss()
         corrects = eval_loss = 0
-        validation_data = DataLoader(self.data['valid']['src'], self.data['valid']['label'],
+        validation_data = CorpusDataLoader(self.data['valid']['src'], self.data['valid']['label'],
                                      self.data['max_len'], batch_size=self.batch_size, shuffle=False, )
         _size = validation_data.sents_size
 
@@ -475,4 +475,7 @@ def Corpus():
 
 
 if __name__ == '__main__':
+    # Twitter()
+    Imdb()
+    Reuters()
     Corpus()
