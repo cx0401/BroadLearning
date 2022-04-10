@@ -11,7 +11,7 @@ def loadData(data_file):
 
 
 def TwitterText():
-    args = utils.TwitterUtils
+    args = utils.TwitterUtils()
     print(args)
     # myData = loadData(args.data_file)
     myData = TwitterData()
@@ -37,15 +37,15 @@ def TwitterText():
 
 
 def ImdbText():
-    args = utils.parse_args()
+    args = utils.ImdbUtils()
     print(args)
-    myData = ImdbData(seq_len=args.seq_len, out_dim=args.out_dim)
+    myData = ImdbData(seq_len=args.seq_len)
     myData.data_convert()
     model = "model/Imdb/Train" + str(args.epochs) + "_Embed" + str(args.embedding_dim) + "_Hidden" + str(
         args.hidden_dim) + "_Seq" + str(args.seq_len) + ".pth" # 定义模型保存路径
     print("------BLS-------IMDB")
     bls = BLS(windowSize=args.windowSize, windowNum=args.windowNum, enhanceNum=args.enhanceNum, S=args.S, R=args.R)
-    bls.loadImdbkerasRNN(vocab_size=myData.vocab_size, out_dim=args.out_dim, embedding_dim=args.embedding_dim,
+    bls.loadImdbkerasRNN(vocab_size=myData.vocab_size, out_dim=myData.out_dim, embedding_dim=args.embedding_dim,
                     hidden_dim=args.hidden_dim, n_layers=args.n_layers, device=args.device, model=model)
     bls.getData(myData.train_x, myData.train_y, myData.test_x, myData.test_y)
     bls.train()
@@ -55,14 +55,14 @@ def ImdbText():
     rbls = RBLS(windowSize=args.windowSize, windowNum=args.windowNum, enhanceNum=args.enhanceNum, S=args.S, R=args.R,
                 seqLen=myData.seq_len, embeddingDim=args.embedding_dim)
     rbls.getData(myData.train_x, myData.train_y, myData.test_x, myData.test_y)
-    rbls.loadImdbkerasRNN(vocab_size=myData.vocab_size, out_dim=args.out_dim, embedding_dim=args.embedding_dim,
+    rbls.loadImdbkerasRNN(vocab_size=myData.vocab_size, out_dim=myData.out_dim, embedding_dim=args.embedding_dim,
                           hidden_dim=args.hidden_dim, n_layers=args.n_layers, device=args.device, model=model)
     rbls.train()
     rbls.test()
 
 
 def ReutersText():
-    args = utils.parse_args()
+    args = utils.ReutersUtils()
     print(args)
     myData = ReutersData(seq_len=args.seq_len, out_dim=args.out_dim)
     myData.data_convert()
@@ -87,7 +87,7 @@ def ReutersText():
 
 
 def CorpusText():
-    args = utils.parse_args()
+    args = utils.CorpusUtils()
     print(args)
     myData = CorpusData(seq_len=args.seq_len)
     myData.data_convert()
@@ -147,4 +147,5 @@ def run(data, model):
 if __name__ == "__main__":
     # TwitterText()
     # ImdbText()
+    # ReutersText()
     CorpusText()
