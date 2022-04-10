@@ -4,7 +4,7 @@ from numpy import random
 from sklearn import preprocessing
 import numpy as np
 from scipy import linalg as LA
-from net.RNNet import SentimentRNN, IMDBNet, IMBDKerasNet, reutersKerasNet, corpusNet
+from net.RNNet import TwitterNet, ImdbNet, ReutersNet, CorpusNet
 
 
 def shrinkage(a, b):
@@ -101,39 +101,36 @@ class BLS():
         self.test_x = test_x
         self.test_y = test_y
 
-    def loadTwitterRNN(self, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, device, model):
-        lstm = SentimentRNN(vocab_size=vocab_size, output_size=output_size, embedding_dim=embedding_dim,
-                            hidden_dim=hidden_dim, n_layers=n_layers,
-                            device=device)
-        lstm.load_state_dict(torch.load(model))
+    def loadTwitterRNN(self, vocab_size, out_dim, embedding_dim, hidden_dim, n_layers, device, model):
+        lstm = TwitterNet(vocab_size=vocab_size, out_dim=out_dim, embedding_dim=embedding_dim,
+                          hidden_dim=hidden_dim, n_layers=n_layers,
+                          device=device)
+        lstm.to(device)
+        pars = torch.load(model, map_location='cpu')
+        lstm.load_state_dict(pars)
+        self.lstm = lstm
+
+    def loadImdbkerasRNN(self, vocab_size, out_dim, embedding_dim, hidden_dim, n_layers, device, model):
+        lstm = ImdbNet(max_words=vocab_size, emb_size=embedding_dim, hid_size=hidden_dim)
+        pars = torch.load(model, map_location='cpu')
+        lstm.load_state_dict(pars)
         lstm.to(device)
         self.lstm = lstm
 
-    def loadImdbRNN(self, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, device, model):
-        lstm = IMDBNet(vocab_size=vocab_size, output_size=output_size, embedding_dim=embedding_dim,
-                       hidden_dim=hidden_dim, n_layers=n_layers,
-                       device=device)
-        lstm.load_state_dict(torch.load(model))
+    def loadreuterskerasRNN(self, vocab_size, out_dim, embedding_dim, hidden_dim, n_layers, device, model):
+        lstm = ReutersNet(max_words=vocab_size, emb_size=embedding_dim, hid_size=hidden_dim)
+        pars = torch.load(model, map_location='cpu')
+        lstm.load_state_dict(pars)
         lstm.to(device)
         self.lstm = lstm
 
-    def loadImdbkerasRNN(self, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, device, model):
-        lstm = IMBDKerasNet(max_words=vocab_size, emb_size=embedding_dim, hid_size=hidden_dim)
-        lstm.load_state_dict(torch.load(model))
-        lstm.to(device)
-        self.lstm = lstm
-
-    def loadreuterskerasRNN(self, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, device, model):
-        lstm = reutersKerasNet(max_words=vocab_size, emb_size=embedding_dim, hid_size=hidden_dim)
-        lstm.load_state_dict(torch.load(model))
-        lstm.to(device)
-        self.lstm = lstm
-
-    def loadcorpusRNN(self, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, device, model, use_attention,
+    def loadcorpusRNN(self, vocab_size, out_dim, embedding_dim, hidden_dim, n_layers, device, model, use_attention,
                       attention_size, bidirectional):
-        lstm = corpusNet(vocab_size=vocab_size, embedding_dim=embedding_dim, hidden_dim=hidden_dim,
-                         use_attention=use_attention, attention_size=attention_size, bidirectional=bidirectional,use_cuda=False)
-        lstm.load_state_dict(torch.load(model))
+        lstm = CorpusNet(vocab_size=vocab_size, embedding_dim=embedding_dim, hidden_dim=hidden_dim,
+                         use_attention=use_attention, attention_size=attention_size, bidirectional=bidirectional,
+                         device=device)
+        pars = torch.load(model, map_location='cpu')
+        lstm.load_state_dict(pars)
         lstm.to(device)
         self.lstm = lstm
 
@@ -244,39 +241,36 @@ class RBLS():
         self.test_x = test_x
         self.test_y = test_y
 
-    def loadTwitterRNN(self, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, device, model):
-        lstm = SentimentRNN(vocab_size=vocab_size, output_size=output_size, embedding_dim=embedding_dim,
-                            hidden_dim=hidden_dim, n_layers=n_layers,
-                            device=device)
-        lstm.load_state_dict(torch.load(model))
+    def loadTwitterRNN(self, vocab_size, out_dim, embedding_dim, hidden_dim, n_layers, device, model):
+        lstm = TwitterNet(vocab_size=vocab_size, out_dim=out_dim, embedding_dim=embedding_dim,
+                          hidden_dim=hidden_dim, n_layers=n_layers,
+                          device=device)
+        pars = torch.load(model, map_location='cpu')
+        lstm.load_state_dict(pars)
         lstm.to(device)
         self.lstm = lstm
 
-    def loadImdbRNN(self, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, device, model):
-        lstm = IMDBNet(vocab_size=vocab_size, output_size=output_size, embedding_dim=embedding_dim,
-                       hidden_dim=hidden_dim, n_layers=n_layers,
-                       device=device)
-        lstm.load_state_dict(torch.load(model))
+    def loadImdbkerasRNN(self, vocab_size, out_dim, embedding_dim, hidden_dim, n_layers, device, model):
+        lstm = ImdbNet(max_words=vocab_size, emb_size=embedding_dim, hid_size=hidden_dim)
+        pars = torch.load(model, map_location='cpu')
+        lstm.load_state_dict(pars)
         lstm.to(device)
         self.lstm = lstm
 
-    def loadImdbkerasRNN(self, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, device, model):
-        lstm = IMBDKerasNet(max_words=vocab_size, emb_size=embedding_dim, hid_size=hidden_dim)
-        lstm.load_state_dict(torch.load(model))
+    def loadreuterskerasRNN(self, vocab_size, out_dim, embedding_dim, hidden_dim, n_layers, device, model):
+        lstm = ReutersNet(max_words=vocab_size, emb_size=embedding_dim, hid_size=hidden_dim)
+        pars = torch.load(model, map_location='cpu')
+        lstm.load_state_dict(pars)
         lstm.to(device)
         self.lstm = lstm
 
-    def loadreuterskerasRNN(self, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, device, model):
-        lstm = reutersKerasNet(max_words=vocab_size, emb_size=embedding_dim, hid_size=hidden_dim)
-        lstm.load_state_dict(torch.load(model))
-        lstm.to(device)
-        self.lstm = lstm
-
-    def loadcorpusRNN(self, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, device, model, use_attention,
+    def loadcorpusRNN(self, vocab_size, out_dim, embedding_dim, hidden_dim, n_layers, device, model, use_attention,
                       attention_size, bidirectional):
-        lstm = corpusNet(vocab_size=vocab_size, embedding_dim=embedding_dim, hidden_dim=hidden_dim,
-                         use_attention=use_attention, attention_size=attention_size, bidirectional=bidirectional,use_cuda=False)
-        lstm.load_state_dict(torch.load(model))
+        lstm = CorpusNet(vocab_size=vocab_size, embedding_dim=embedding_dim, hidden_dim=hidden_dim,
+                         use_attention=use_attention, attention_size=attention_size, bidirectional=bidirectional,
+                         device=device)
+        pars = torch.load(model, map_location='cpu')
+        lstm.load_state_dict(pars)
         lstm.to(device)
         self.lstm = lstm
 

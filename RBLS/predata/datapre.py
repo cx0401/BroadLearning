@@ -7,7 +7,7 @@ import torch
 import pandas as pd
 
 
-class imdbkerasdata():
+class ImdbData():
     def __init__(self, batchsize=256, seq_len=200, out_dim=2):
         MAX_WORDS = 10002  # imdb’s vocab_size 即词汇表大小
         MAX_LEN = 200  # max length
@@ -56,8 +56,8 @@ class matData():
         return output.write(data)
 
 
-class Twitterdata():
-    def __init__(self, out_dim):
+class TwitterData():
+    def __init__(self):
         data = pd.read_csv('data/Tweets.csv')
         data.head()
         reviews = np.array(data['text'])[:14000]
@@ -126,7 +126,7 @@ class Twitterdata():
         self.vocab_to_int = vocab_to_int
         self.vocab_size = len(vocab_to_int) + 1
         self.punctuation = punctuation
-        self.out_dim = out_dim
+        self.out_dim = 2
         self.train_x = train_x
         self.train_y = train_y
         self.test_x = test_x
@@ -153,7 +153,7 @@ class Twitterdata():
         self.val_y = self.one_hot(self.val_y, self.out_dim)
 
 
-class reuterskerasdata():
+class ReutersData():
     def __init__(self, batchsize=256, seq_len=200, out_dim=2):
         MAX_WORDS = 10002  # imdb’s vocab_size 即词汇表大小
         MAX_LEN = seq_len  # max length
@@ -182,7 +182,7 @@ class reuterskerasdata():
         self.test_y = y.detach().numpy()
 
 
-class attentiondata():
+class CorpusData():
     def __init__(self, batchsize=256, seq_len=200, out_dim=2):
         batch_size = 32
         seed = 1111
